@@ -5,11 +5,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ilanguage.oprime.domain.OPrime;
-import ca.ilanguage.oprime.morphologicalawareness.R;
-import ca.ilanguage.oprime.preferences.PreferenceConstants;
-import ca.ilanguage.oprime.preferences.SetPreferencesActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +17,13 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.VideoView;
+import ca.ilanguage.oprime.domain.OPrime;
+import ca.ilanguage.oprime.morphologicalawareness.R;
+import ca.ilanguage.oprime.preferences.PreferenceConstants;
+import ca.ilanguage.oprime.preferences.SetPreferencesActivity;
 
 public class MorphologicalAwarenessHome extends Activity {
 	private String mParticipantId = OPrime.PARTICIPANT_ID_DEFAULT;
@@ -51,16 +49,8 @@ public class MorphologicalAwarenessHome extends Activity {
     	setContentView(R.layout.video_recorder);
 		
 		mImage = (ImageView) findViewById(R.id.mainimage);
-		mImage.setImageResource(R.drawable.androids_experimenter_kids);
+		mImage.setImageResource(R.drawable.main_image);
 		//this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    	
-    	
-    	if(savedInstanceState == null){
-    		Intent setupIntent = new Intent(getBaseContext(),
-        	        SetPreferencesActivity.class);
-        	    startActivityForResult(setupIntent, OPrime.PREPARE_TRIAL);
-
-    	}
     	
     }
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,7 +69,6 @@ public class MorphologicalAwarenessHome extends Activity {
 		// For "Title only": Examples of matching an ID with one assigned in
 		// the XML
 		case R.id.open_settings:
-
 			Intent i = new Intent(getBaseContext(),
 					SetPreferencesActivity.class);
 			startActivity(i);
@@ -300,6 +289,23 @@ public class MorphologicalAwarenessHome extends Activity {
 			break;
 		}
 	}
+	
+	public void startExperiment(View v) {
+		initExperiment();
+		startVideoRecorder();
+
+		/*
+		 * Wait two seconds so that the video activity has time to load the
+		 * camera. It will continue recording until you exit the video
+		 * activity.
+		 */
+		mHandlerDelayStimuli.postDelayed(new Runnable() {
+			public void run() {
+				launchExperiment();
+			}
+		}, 2000);
+	}
+	
     @Override
     public void onDestroy(){
     	//this shouldn't be needed.
