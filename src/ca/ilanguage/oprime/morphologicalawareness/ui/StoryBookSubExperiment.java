@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 
 package ca.ilanguage.oprime.morphologicalawareness.ui;
 
@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -28,9 +29,8 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
-
-import ca.ilanguage.oprime.domain.OPrime;
 import ca.ilanguage.oprime.morphologicalawareness.R;
+
 /**
  * Simple Activity for curl testing.
  * 
@@ -46,8 +46,7 @@ public class StoryBookSubExperiment extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_curl);
-		//this.setTitle("Practique");
-		
+		// this.setTitle("Practique");
 
 		int index = 0;
 		if (getLastNonConfigurationInstance() != null) {
@@ -60,7 +59,6 @@ public class StoryBookSubExperiment extends Activity {
 		mCurlView.setBackgroundColor(0xFF202830);
 		mCurlView.setRenderLeftPage(false);
 		mCurlView.setMargins(.0f, .0f, .0f, .0f);
-	
 
 		// This is something somewhat experimental. Before uncommenting next
 		// line, please see method comments in CurlView.
@@ -79,45 +77,43 @@ public class StoryBookSubExperiment extends Activity {
 		mCurlView.onResume();
 	}
 
-	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-	    	Intent i = new Intent("ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE");
-	        sendBroadcast(i);
-	    }
-	    return super.onKeyDown(keyCode, event);
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent i = new Intent(
+					"ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE");
+			sendBroadcast(i);
+		}
+		return super.onKeyDown(keyCode, event);
 
 	}
-	
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		return mCurlView.getCurrentIndex();
 	}
 
-	
 	/**
 	 * Bitmap provider.
 	 */
 	private class BitmapProvider implements CurlView.BitmapProvider {
 
-		private int[] mBitmapIds = { R.drawable.stimulus_9_nonpublic,
-				R.drawable.stimulus_12_nonpublic,
-				R.drawable.stimulus_8_nonpublic,
-				R.drawable.stimulus_25_nonpublic,
-				R.drawable.stimulus_15_nonpublic,
-				R.drawable.stimulus_26_nonpublic,
-				R.drawable.stimulus_21_nonpublic,//4
-				R.drawable.stimulus_18_nonpublic,
-				R.drawable.stimulus_5_nonpublic,
-				R.drawable.stimulus_17_nonpublic,
-				R.drawable.stimulus_13_nonpublic,
-				R.drawable.stimulus_22_nonpublic,
-				R.drawable.stimulus_24_nonpublic };
-		
+		private int[] mBitmapIds;
+
+		public int[] initializeImageStimuli() {
+			TypedArray imgs = getResources().obtainTypedArray(
+					R.array.image_stimuli);
+			int[] bitmapIds = new int[imgs.length()]; 
+			for (int i = 0; i < imgs.length(); i++) {
+				bitmapIds[i] = imgs.getResourceId(i, -1);
+			}
+			return bitmapIds;
+		}
+
 		@Override
-		public void playSound(){
-			MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gammatone);
+		public void playSound() {
+			MediaPlayer mediaPlayer = MediaPlayer.create(
+					getApplicationContext(), R.raw.gammatone);
 			try {
 				mediaPlayer.prepare();
 			} catch (IllegalStateException e) {
@@ -129,15 +125,17 @@ public class StoryBookSubExperiment extends Activity {
 			}
 			mediaPlayer.start();
 		}
+
 		@Override
 		public Bitmap getBitmap(int width, int height, int index) {
-			
+			if (mBitmapIds == null) {
+				mBitmapIds = initializeImageStimuli();
+			}
 			Bitmap b = Bitmap.createBitmap(width, height,
 					Bitmap.Config.ARGB_8888);
 			b.eraseColor(0xFFFFFFFF);
 			Canvas c = new Canvas(b);
 			Drawable d = getResources().getDrawable(mBitmapIds[index]);
-			
 
 			int margin = mBorderSize;
 			int border = mBorderSize;
@@ -161,12 +159,12 @@ public class StoryBookSubExperiment extends Activity {
 			p.setColor(0xFFC0C0C0);
 			c.drawRect(r, p);
 			p.setColor(0xFF0000C0);
-			int itemNumber = index+1;
-			if(index < 3){
-				c.drawText("Pratique "+itemNumber, 50, 40, p);
-			}else{
-				itemNumber = index-2;
-				c.drawText("Item "+itemNumber, 50, 40, p);
+			int itemNumber = index + 1;
+			if (index < 3) {
+				c.drawText("Pratique " + itemNumber, 50, 40, p);
+			} else {
+				itemNumber = index - 2;
+				c.drawText("Item " + itemNumber, 50, 40, p);
 			}
 			r.left += border;
 			r.right -= border;
@@ -175,12 +173,15 @@ public class StoryBookSubExperiment extends Activity {
 
 			d.setBounds(r);
 			d.draw(c);
-			
+
 			return b;
 		}
 
 		@Override
 		public int getBitmapCount() {
+			if (mBitmapIds == null) {
+				mBitmapIds = initializeImageStimuli();
+			}
 			return mBitmapIds.length;
 		}
 	}
@@ -202,8 +203,5 @@ public class StoryBookSubExperiment extends Activity {
 
 		}
 	}
-
-	
-	
 
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="image_stimuli">
+        <item>@drawable/stimulus_9_nonpublic</item>
+        <item>@drawable/stimulus_12_nonpublic</item>
+        <item>@drawable/stimulus_8_nonpublic</item>
+        <item>@drawable/stimulus_25_nonpublic</item>
+        <item>@drawable/stimulus_15_nonpublic</item>
+        <item>@drawable/stimulus_26_nonpublic</item>
+        <item>@drawable/stimulus_21_nonpublic</item>
+        <item>@drawable/stimulus_18_nonpublic</item>
+        <item>@drawable/stimulus_5_nonpublic</item>
+        <item>@drawable/stimulus_17_nonpublic</item>
+        <item>@drawable/stimulus_13_nonpublic</item>
+        <item>@drawable/stimulus_22_nonpublic</item>
+        <item>@drawable/stimulus_24_nonpublic</item>
+	</string-array>
+
+</resources>
